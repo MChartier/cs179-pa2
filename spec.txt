@@ -1,0 +1,33 @@
+Implement web page with suggested readings for Book Club.
+On load, page shows all books already in the suggestions list.
+Book suggestions stored in a database.
+
+Implement functionality to add and remove books from the list.
+
+For each book, collect:
+  author
+  title
+  optional URL for image of cover (do not download, just hotlink)
+
+For each book, allow people to add comments.
+Comments should be hidden, with an option to unfold them.
+
+Users should be able to mark/unmark books as "favorites".
+Persist using local storage so that those marked persist through refresh.
+
+All updates implemented in JavaScript, no page reloads.
+
+Use jQuery Mobile as appropriate to implement UI componenets.
+
+Extra credit: client-side search.
+  Search box. When person types in a word, only entries containing that word
+  are shown.
+
+Solution should be robust.
+  Input validation.
+  Guard against injection attacks.
+Product should be usable.
+  Clear affordances.
+  Very clear what user can and should do
+
+

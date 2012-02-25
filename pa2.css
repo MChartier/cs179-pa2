@@ -1,0 +1,97 @@
+body
+{
+  width:100%;
+  background-color:white;
+}
+
+#header
+{
+  width:70%;
+  margin:0 auto 0 auto;
+}
+
+#title-image
+{
+  position:relative;
+  top:5px;
+  width:45px;
+}
+
+#title-text
+{
+  font-size:x-large;
+}
+
+#container
+{
+  width:70%;
+  margin:0 auto 0 auto;
+  overflow:auto;
+}
+
+#selections
+{
+  overflow:auto;
+  border:solid black 1px;
+  background-color:tan;
+
+}
+
+#sidebar
+{
+  float:right;
+  border: solid black 1px;
+  margin-left: 30px;
+  background-color:tan;
+
+}
+
+.book
+{
+  margin:5px;
+
+}
+
+.booktitle
+{
+  font-size:large;
+  font-weight:bold;
+}
+
+.bookauthor
+{
+  font-style:italic;
+}
+
+.bookinfo
+{
+  overflow:auto;
+}
+
+.bookcover
+{
+  max-width:120px;
+  max-height:160px;
+  padding-left:10px;
+  padding-right:10px;
+  float:left;
+  overflow:hidden;
+}
+
+.booksynopsis
+{
+  text-align:justify;
+  font-size:medium;
+  padding:5px;
+  word-wrap:break-word;
+}
+
+#comments
+{
+}
+
+#comment
+{
+  word-wrap:break-word;
+}
+
