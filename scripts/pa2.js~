@@ -1,0 +1,75 @@
+function addBook()
+{
+    var newTitle = $("input#bookformtitle").val();
+    var newAuthor = $("input#bookformauthor").val();
+    var newSynopsis = $("#bookformsynopsis").val();
+    var newImage = $("input#bookformimage").val();
+
+    var dataString = "opcode=2&title=" + newTitle + "&author=" + newAuthor + "&synopsis=" + newSynopsis + "&image=" + newImage;
+
+    // send ajax request
+    $.ajax({
+        url: "handler.php",
+    	type: "POST",
+    	data: dataString
+    }).done(function(msg) {
+    	refreshBooks();
+    });
+}
+
+function removeBook(bookId)
+{
+    $.ajax({
+	url: "handler.php",
+	type: "POST",
+	data: "opcode=3&bookId=" + bookId
+    }).done(function(msg) {
+	refreshBooks();
+    });
+}
+
+function refreshBooks()
+{
+   $.ajax({
+        url: "handler.php",
+        type: "POST",
+        data: "opcode=1"
+    }).done(function(msg) {
+    	$("#selections").html(msg);
+	$(".booksynopsis").expander({
+	    slicePoint: 400,
+            expandPrefix: '',
+            expandText: '>>>',
+            userCollapseText: '<<<'
+	});
+    });
+}
+
+function addComment(bookId)
+{
+    var newName = "matt";
+    var newText = "comment";
+
+    var dataString = "bookId=" + bookId + "&name=" + newName + "&text=" + newText;
+    // send ajax request
+    // $.ajax({
+    //     url: "addcomment.php",
+    // 	type: "POST",
+    // 	data: dataString
+    // }).done(function(msg) {
+    // 	// add to page
+    // });
+}
+
+
+
+$.expander.defaults.slicePoint = 120;
+
+$(document).ready(function() {
+    $("input#bookformsubmit").click(function(event) {
+	event.preventDefault();
+        addBook();
+    });
+
+    refreshBooks();
+});
