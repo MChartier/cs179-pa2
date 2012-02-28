@@ -1,18 +1,6 @@
 <?
 require_once('includes/common.php');
 
-// function displayComments($bookId) {
-//   $sql = "SELECT * FROM comments WHERE bookId=" . $bookId .
-//           " ORDER BY commentId ASC";
-
-//   $result = mysql_query($sql);
-//   while($row = mysql_fetch_array($result)) {
-//     echo('<div class="comment">' . 
-//          '<div class="commenttext">' . $row["text"] . '</div>' .
-//          '</div>');
-//   }
-// }
-
 function getBooks() {
   $sql = "SELECT * FROM books ORDER BY uid DESC";
   $result = mysql_query($sql);
@@ -39,7 +27,6 @@ function addBook() {
   // get input from 'POST' message
   $title = mysql_real_escape_string($_POST["title"]);
   $author = mysql_real_escape_string($_POST["author"]);
-  $synopsis = mysql_real_escape_string($_POST["synopsis"]);
   $image = mysql_real_escape_string($_POST["image"]);
 
   $sql = "INSERT INTO books(title, author, image_url) " . 

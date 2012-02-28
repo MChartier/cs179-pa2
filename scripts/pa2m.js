@@ -1,19 +1,20 @@
 function addBook()
 {
+  
     var newTitle = $("input#bookformtitle").val();
     var newAuthor = $("input#bookformauthor").val();
-    var newSynopsis = $("#bookformsynopsis").val();
     var newImage = $("input#bookformimage").val();
 
-    var dataString = "opcode=2&title=" + newTitle + "&author=" + newAuthor + "&synopsis=" + newSynopsis + "&image=" + newImage;
+    var dataString = "opcode=2&title=" + newTitle + "&author=" + newAuthor + "&image=" + newImage;
 
     // send ajax request
     $.ajax({
         url: "handler.php",
-    	type: "POST",
-    	data: dataString
+      	type: "POST",
+      	data: dataString
     }).done(function(msg) {
-    	refreshBooks();
+      alert(msg);
+    	loadBooks();
     });
 }
 
@@ -24,11 +25,37 @@ function removeBook(bookId)
 	type: "POST",
 	data: "opcode=3&bookId=" + bookId
     }).done(function(msg) {
-	    refreshBooks();
+	    loadBooks();
     });
 }
 
-function refreshBooks()
+function addComment(bookId)
+{
+  var commentForm = $("#commentform" + bookId);
+  var newText = commentForm.val();
+  var dataString = "opcode=5&bookId=" + bookId + "&text=" + newText;
+
+  // send ajax request
+  $.ajax({
+    url: "handler.php",
+    type: "POST",
+    data: dataString
+  }).done(function(msg) {
+    loadComments(bookId);
+    commentForm.val("");
+  });
+}
+
+function toggleComments(bookId)
+{
+  var comments = $("#book" + bookId).children(".comments");
+  if(comments.css("display") == "none")
+    comments.show("fast");
+  else
+    comments.hide("fast");
+}
+
+function loadBooks()
 {
   $.ajax({
     url: "handler.php",
@@ -40,7 +67,7 @@ function refreshBooks()
     var books = JSON.parse(msg);
 
     for(i in books) {
-      displayBook(books[i].uid, books[i].title, books[i].author, books[i].image_url);
+      loadBook(books[i].uid, books[i].title, books[i].author, books[i].image_url);
     }
 
     $(".booksynopsis").expander({
@@ -56,27 +83,30 @@ function refreshBooks()
   });
 }
 
-function displayBook(bookId, bookTitle, bookAuthor, bookCover) {
-  var divId = "book" + bookId;
+function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
+  
+  // main book div
   var book = $('<div/>', {
-    id: divId,
+    id: "book" + bookId,
     class: "book"
   }).appendTo('#selections');
 
+  // book info div containing title, author, cover, comments toggle, remover
   var bookInfo = $('<div/>', {
     class: "bookinfo"
   }).appendTo(book);
 
+  // book cover div
   var cover = $('<div/>', {
     class: "bookcover",
   }).appendTo(bookInfo);
-
   $('<img/>', {
     src: bookCover,
     width: 100,
     alt: bookTitle
   }).appendTo(cover);
 
+  // book remover div (clicking removes book from database)
   var remover = $('<div/>', {
     class: "bookremover",
     html: "X"
@@ -86,16 +116,17 @@ function displayBook(bookId, bookTitle, bookAuthor, bookCover) {
     removeBook(bookId);
   });
 
+  // title and author
   $('<div/>', {
     class: "booktitle",
     html: bookTitle
   }).appendTo(bookInfo);
-
   $('<div/>', {
     class: "bookauthor",
     html: "by " + bookAuthor
   }).appendTo(bookInfo);
 
+  // comment toggle (clicking displays or hides comments)
   $('<div/>', {
     class: "commenttoggle",
     html: "Loading comments..."
@@ -104,6 +135,11 @@ function displayBook(bookId, bookTitle, bookAuthor, bookCover) {
   var commentsDiv = $('<div/>', {
     class: "comments"
   }).css("display", "none").appendTo(book);
+
+  $("<ul/>", {
+      class: "commentslist",
+      "data-role": "listview"
+    }).appendTo(commentsDiv);
 
   var commentForm = $("<div/>", {
     class: "commentform"
@@ -128,16 +164,11 @@ function displayBook(bookId, bookTitle, bookAuthor, bookCover) {
     addComment(bookId);
   });
 
-    $("<ul/>", {
-	class: "commentslist",
-	data-role: "listview"
-    }).appendTo(commentsDiv);
-
   // load comments asynchronously on book load
-  refreshComments(bookId);
+  loadComments(bookId);
 }
 
-function refreshComments(bookId)
+function loadComments(bookId)
 {
   $.ajax({
     url: "handler.php",
@@ -147,7 +178,7 @@ function refreshComments(bookId)
 
     var comments = $.parseJSON(msg);
     var bookDiv = $("#book" + bookId);
-    var commentsList = bookDiv.children(".comments").children("commentslist");
+    var commentsList = bookDiv.children(".comments").children(".commentslist");
 
     // remove all old comments
     commentsList.children(".comment").remove();
@@ -160,6 +191,8 @@ function refreshComments(bookId)
       }).appendTo(commentsList);
     } 
 
+    commentsList.listview();
+
     // update toggle for these comments
     bookDiv.children(".commenttoggle").html(comments.length + " comments");
     bookDiv.children(".commenttoggle").click(
@@ -167,42 +200,6 @@ function refreshComments(bookId)
         toggleComments(bookId);
       });
   });
-}
-
-function displayComment(bookId, commentText)
-{
-  var bookDivId = "book" + bookId;
-  var comments = $("#" + bookDivId).children(".comment");
-  $('<div/>', {
-    class: "comment",
-    html: commentText
-  }).appendTo(comments)
-}
-
-function addComment(bookId)
-{
-  var commentForm = $("#commentform" + bookId);
-  var newText = commentForm.val();
-  var dataString = "opcode=5&bookId=" + bookId + "&text=" + newText;
-
-  // send ajax request
-  $.ajax({
-    url: "handler.php",
-    type: "POST",
-    data: dataString
-  }).done(function(msg) {
-    refreshComments(bookId);
-    commentForm.val("");
-  });
-}
-
-function toggleComments(bookId)
-{
-  var comments = $("#book" + bookId).children(".comments");
-  if(comments.css("display") == "none")
-    comments.show("fast");
-  else
-    comments.hide("fast");
 }
 
 $(document).ready(function() {
@@ -216,5 +213,5 @@ $(document).ready(function() {
     addBook();
   });
 
-  refreshBooks();
+  loadBooks();
 });
