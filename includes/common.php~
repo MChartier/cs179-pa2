@@ -9,7 +9,7 @@
     die('Failed to connect to mysql database.');
 
   // select book club table for queries
-  if(!mysql_select_db($db, $connection))
+  if(!mysql_select_db($table, $connection))
     die('Failed to select database!');
 
 ?>

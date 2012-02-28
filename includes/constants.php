@@ -1,8 +1,8 @@
 <?
-  $username = "chartier";
-  $password = "F9nGbq6U8sU3G4HY";
+  $username = "cs179";
+  $password = "cs179pa2";
   $host = "localhost";
-  $table = "bookclub";
+  $db = "cs179pa2";
 
   // opcodes
   $GETBOOKS = 1;

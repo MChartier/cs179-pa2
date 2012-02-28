@@ -1,56 +1,38 @@
 <?
 require_once('includes/common.php');
 
-function displayComments($bookId) {
-  $sql = "SELECT * FROM comments WHERE bookId=" . $bookId .
-          " ORDER BY commentId ASC";
+// function displayComments($bookId) {
+//   $sql = "SELECT * FROM comments WHERE bookId=" . $bookId .
+//           " ORDER BY commentId ASC";
 
-  $result = mysql_query($sql);
-  while($row = mysql_fetch_array($result)) {
-    echo('<div class="comment">' . 
-         '<div class="commenttext">' . $row["text"] . '</div>' .
-         '</div>');
-  }
-}
+//   $result = mysql_query($sql);
+//   while($row = mysql_fetch_array($result)) {
+//     echo('<div class="comment">' . 
+//          '<div class="commenttext">' . $row["text"] . '</div>' .
+//          '</div>');
+//   }
+// }
 
-function displayBooks() {
+function getBooks() {
   $sql = "SELECT * FROM books ORDER BY bookId DESC";
   $result = mysql_query($sql);
 
-  while($row = mysql_fetch_array($result)) {
-
-    echo('<div class="book">'); // start book
-
-    echo('<div class="bookinfo">'); // start book info
-
-    echo('<div class="bookremover" ' .
-              'onclick="(function(bookId){removeBook(bookId);})(' . 
-              $row["bookId"] . ')">X</div>');
-
-    echo('<div class="booktitle">' . $row["title"] . '</div>');
-    echo('<div class="bookauthor">' . $row["author"] . '</div>');
-    echo('<img src="' . $row["image"] . '" class="bookcover">');
-    echo('<div class="booksynopsis">' . $row["synopsis"] . '</div>');
-    echo('</div>'); // end book info
-
-    echo('<hr>');
-
-    echo('<form>' .
-         '<textarea id="commenttext' . $row["bookId"] . '" cols=50 rows=5>' . 
-	 '</textarea><br>' .
-         '<input class="commentsubmit" id="commentsubmit' . $row["bookId"] . 
-	 '" type="submit" ' .
-	 'onclick="(function(bookId){addComment(bookId);})(' . 
-	 $row["bookId"] . ')"' . 
-	 'value="save">' .
-         '</form>');
-
-    echo('<div id="comments' . $row["bookId"] . '">');
-
-    displayComments($row["bookId"]);
-
-    echo('</div></div>'); // end book
+  $rows = array();
+  while($r = mysql_fetch_assoc($result)) {
+    $rows[] = $r;
   }
+  print json_encode($rows);
+}
+
+function getComments($bookId) {
+  $sql = "SELECT * FROM comments WHERE bookId=" . $bookId . " ORDER BY commentId ASC";
+  $result = mysql_query($sql);
+
+  $rows = array();
+  while($r = mysql_fetch_assoc($result)) {
+    $rows[] = $r;
+  }
+  print json_encode($rows);
 }
 
 function addBook() {
@@ -80,6 +62,8 @@ function addComment() {
   $sql = "INSERT INTO comments(bookId, text) VALUES('$bookId', '$text')";
   
   $result = mysql_query($sql);
+
+  echo $sql;
 }
 
 // handler
@@ -87,7 +71,7 @@ $opcode = $_POST["opcode"];
 
 switch($opcode) {
 case $GETBOOKS:
-  displayBooks();  
+  getBooks();  
   break;
 case $ADDBOOK:
   addBook();
@@ -96,9 +80,9 @@ case $REMOVEBOOK:
   removeBook();
   break;
 case $GETCOMMENTS:
-  displayComments($_POST["bookId"]);
+  getComments($_POST["bookId"]);
   break;
-case $ADDCOMMENT;
+case $ADDCOMMENT:
   addComment();
   break;
 default:

@@ -6,7 +6,7 @@ body
 
 #header
 {
-  width:70%;
+  width:50%;
   margin:0 auto 0 auto;
 }
 
@@ -24,7 +24,7 @@ body
 
 #container
 {
-  width:70%;
+  width:50%;
   margin:0 auto 0 auto;
   overflow:auto;
 }
@@ -32,24 +32,27 @@ body
 #selections
 {
   overflow:auto;
-  border:solid black 1px;
-  background-color:tan;
-
 }
 
-#sidebar
+#bookinput
 {
-  float:right;
-  border: solid black 1px;
-  margin-left: 30px;
+  border: solid black 3px;
   background-color:tan;
 
 }
 
 .book
 {
-  margin:5px;
+  margin:10px 0 10px 0;
+  border:solid black 3px;
+  background-color:tan;
+  overflow:auto;
+  clear:both;
+}
 
+.bookinfo
+{
+  padding:5px;
 }
 
 .bookremover
@@ -70,19 +73,12 @@ body
   font-style:italic;
 }
 
-.bookinfo
-{
-  overflow:auto;
-}
-
 .bookcover
 {
   max-width:120px;
   max-height:160px;
-  padding-left:10px;
-  padding-right:10px;
+  padding-right:5px;
   float:left;
-  overflow:hidden;
 }
 
 .booksynopsis
@@ -93,12 +89,27 @@ body
   word-wrap:break-word;
 }
 
-#comments
+.commenttoggle
 {
+
 }
 
-#comment
+.comments
+{
+  clear:both;
+}
+
+.comment
 {
   word-wrap:break-word;
+}
+
+.field
+{
+  max-width:200px;
+  width:90%;
+  margin-left:5px;
+  font-style:italic;
+  color:gray;
 }
 
