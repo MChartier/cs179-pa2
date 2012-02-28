@@ -183,7 +183,8 @@ function displayComment(bookId, commentText)
 
 function addComment(bookId)
 {
-  var newText = $("#commentform" + bookId).val();
+  var commentForm = $("#commentform" + bookId);
+  var newText = commentForm.val();
   var dataString = "opcode=5&bookId=" + bookId + "&text=" + newText;
 
   // send ajax request
@@ -193,6 +194,7 @@ function addComment(bookId)
     data: dataString
   }).done(function(msg) {
     refreshComments(bookId);
+    commentForm.val("");
   });
 }
 
