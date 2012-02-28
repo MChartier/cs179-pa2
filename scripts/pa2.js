@@ -208,7 +208,6 @@ function toggleComments(bookId)
 }
 
 $(document).ready(function() {
-  $.expander.defaults.slicePoint = 120;
 
   $(".field").click(function() {
     $(this).val("");

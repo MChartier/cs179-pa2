@@ -1,0 +1,36 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+    <title>My Page</title> 
+      <meta name="viewport" content="width=device-width, initial-scale=1"> 
+      <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
+      <link rel="stylesheet" href="stylesheets/pa2m.css" />
+      <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+      <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+      <script type="text/javascript" src="scripts/pa2m.js"></script>
+  </head> 
+  <body> 
+    <div data-role="page">
+      <div data-role="header">
+        <img id="title-image" src="images/books.gif">
+        Ben B's Book Club
+      </div> <!-- end 'header' -->
+      <div id=data-role="content">
+	  <div data-role="fieldcontain" class="ui-hide-label">
+	    <label for="title">Auth:</label>
+	    <label for="author">Title:</label>
+	    <label for="cover_url">Cover URL:</label>
+	    <input type="text" name="title" id="bookformtitle"
+		   value="" placeholder="Title">
+	    <input type="text" name="author" id="bookformtitle"
+		   value="" placeholder="Author">
+	    <input type="text" name="Cover URL" id="bookformtitle"
+		   value="" placeholder="Cover URL">
+	    <input type="submit" name="bookformsubmit" value="save">
+          </div>
+          <div id="selections">
+          </div> <!-- end 'selections' -->
+      </div> <!-- end 'content' -->
+    </div> <!-- end 'page' -->
+  </body>
+</html>

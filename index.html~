@@ -18,17 +18,15 @@
     </div> <!-- end header -->
     <div id="container">
       <div id="bookinput">
-        <form name="bookform" id="bookform">
-	  <input id="bookformtitle"  type="text"   class="field" value="Book Title">
-          <br>
-	  <input id="bookformauthor" type="text"   class="field" value="Book Author">
-          <br>
-	  <input id="bookformimage"  type="text"   class="field" value="Book Cover">
-          <br>
-	  <input id="bookformsubmit" type="submit" value="recommend">
-	</form>
+	      <form name="bookform" id="bookform">
+	        <input id="bookformtitle"  type="text"   class="field" value="Book Title"><br>
+	        <input id="bookformauthor" type="text"   class="field" value="Book Author"><br>
+	        <input id="bookformimage"  type="text"   class="field" value="Book Cover"><br>
+	        <input id="bookformsubmit" type="submit" value="recommend">
+	      </form>
       </div> <!-- end bookinput -->
-      <div id="selections"></div> <!-- end selections -->
+      <div id="selections">
+      </div> <!-- end selections -->
     </div> <!-- end container -->
   </body>
 </html>

@@ -6,7 +6,6 @@ body
 
 #header
 {
-  width:70%;
   margin:0 auto 0 auto;
 }
 
@@ -24,7 +23,6 @@ body
 
 #container
 {
-  width:70%;
   margin:0 auto 0 auto;
   overflow:auto;
 }
