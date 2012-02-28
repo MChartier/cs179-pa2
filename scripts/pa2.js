@@ -140,11 +140,16 @@ function refreshComments(bookId)
     type: "POST",
     data: "opcode=4&bookId=" + bookId
   }).done(function(msg) {
+
+
+
     var comments = $.parseJSON(msg);
 
-    var bookDiv = $("#book" + book_uid);
+    var bookDiv = $("#book" + bookId);
 
     var commentsDiv = bookDiv.children(".comments");
+
+
 
     // remove all old comments
     commentsDiv.children(".comment").remove();
@@ -159,7 +164,10 @@ function refreshComments(bookId)
 
     // update toggle for these comments
     bookDiv.children(".commenttoggle").html(comments.length + " comments");
-    bookDiv.children(".commenttoggle").click(function() {toggleComments(bookId);});
+    bookDiv.children(".commenttoggle").click(
+      function() {
+        toggleComments(bookId);
+      });
   });
 }
 

@@ -40,7 +40,7 @@ function refreshBooks()
     var books = JSON.parse(msg);
 
     for(i in books) {
-      displayBook(books[i].bookId, books[i].title, books[i].author, books[i].image);
+      displayBook(books[i].uid, books[i].title, books[i].author, books[i].image_url);
     }
 
     $(".booksynopsis").expander({
@@ -101,9 +101,33 @@ function displayBook(bookId, bookTitle, bookAuthor, bookCover) {
     html: "Loading comments..."
   }).appendTo(book);
 
-  $('<div/>', {
+  var commentsDiv = $('<div/>', {
     class: "comments",
   }).css("display", "none").appendTo(book);
+
+  var commentForm = $("<div/>", {
+    class: "commentform"
+  }).appendTo(commentsDiv);
+
+  $("<textarea/>", {
+    id: "commentform" + bookId,
+    cols: 40,
+    rows: 5
+  }).appendTo(commentForm);
+
+  commentForm.append("<br>");
+
+  var commentsubmit = $("<input/>", {
+     type: "submit",
+     value: "save"
+  }).appendTo(commentForm);
+
+  commentsubmit.click(function(event) {
+    event.preventDefault();
+
+    addComment(bookId);
+  });
+
 
   // load comments asynchronously on book load
   refreshComments(bookId);
@@ -118,16 +142,22 @@ function refreshComments(bookId)
   }).done(function(msg) {
     var comments = $.parseJSON(msg);
 
-    var bookDiv = $("#book" + bookId);
+    var bookDiv = $("#book" + book_uid);
 
+    var commentsDiv = bookDiv.children(".comments");
+
+    // remove all old comments
+    commentsDiv.children(".comment").remove();
+
+    // place each comment on page
     for(i in comments) {
-      var commentsDiv = bookDiv.children(".comments");
       var comment = $("<div/>", {
         class: "comment",
-        html: comments[i].text
+        html: comments[i].comment
       }).appendTo(commentsDiv);
     } 
 
+    // update toggle for these comments
     bookDiv.children(".commenttoggle").html(comments.length + " comments");
     bookDiv.children(".commenttoggle").click(function() {toggleComments(bookId);});
   });
@@ -145,7 +175,7 @@ function displayComment(bookId, commentText)
 
 function addComment(bookId)
 {
-  var newText = $("#commenttext" + bookId).val();
+  var newText = $("#commentform" + bookId).val();
   var dataString = "opcode=5&bookId=" + bookId + "&text=" + newText;
 
   // send ajax request
