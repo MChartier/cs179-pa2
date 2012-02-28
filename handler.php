@@ -14,7 +14,7 @@ require_once('includes/common.php');
 // }
 
 function getBooks() {
-  $sql = "SELECT * FROM books ORDER BY bookId DESC";
+  $sql = "SELECT * FROM books ORDER BY uid DESC";
   $result = mysql_query($sql);
 
   $rows = array();
@@ -25,7 +25,7 @@ function getBooks() {
 }
 
 function getComments($bookId) {
-  $sql = "SELECT * FROM comments WHERE bookId=" . $bookId . " ORDER BY commentId ASC";
+  $sql = "SELECT * FROM comments WHERE book_uid=" . $bookId . " ORDER BY uid ASC";
   $result = mysql_query($sql);
 
   $rows = array();
@@ -42,15 +42,15 @@ function addBook() {
   $synopsis = mysql_real_escape_string($_POST["synopsis"]);
   $image = mysql_real_escape_string($_POST["image"]);
 
-  $sql = "INSERT INTO books(title, author, synopsis, image) " . 
-         "VALUES('$title', '$author', '$synopsis', '$image')";
+  $sql = "INSERT INTO books(title, author, image_url) " . 
+         "VALUES('$title', '$author', '$image')";
   
   $result = mysql_query($sql);
 }
 
 function removeBook() {
   $bookId = mysql_real_escape_string($_POST["bookId"]);
-  $sql = "DELETE FROM books WHERE bookId = " . $bookId;
+  $sql = "DELETE FROM books WHERE uid = " . $bookId;
   $result = mysql_query($sql);
 }
 
@@ -59,7 +59,7 @@ function addComment() {
   $bookId = mysql_real_escape_string($_POST["bookId"]);
   $text = mysql_real_escape_string($_POST["text"]);
 
-  $sql = "INSERT INTO comments(bookId, text) VALUES('$bookId', '$text')";
+  $sql = "INSERT INTO comments(book_uid, comment) VALUES('$bookId', '$text')";
   
   $result = mysql_query($sql);
 

@@ -40,7 +40,7 @@ function refreshBooks()
     var books = JSON.parse(msg);
 
     for(i in books) {
-      displayBook(books[i].bookId, books[i].title, books[i].author, books[i].image);
+      displayBook(books[i].uid, books[i].title, books[i].author, books[i].image_url);
     }
 
     $(".booksynopsis").expander({
@@ -142,7 +142,7 @@ function refreshComments(bookId)
   }).done(function(msg) {
     var comments = $.parseJSON(msg);
 
-    var bookDiv = $("#book" + bookId);
+    var bookDiv = $("#book" + book_uid);
 
     var commentsDiv = bookDiv.children(".comments");
 
@@ -153,7 +153,7 @@ function refreshComments(bookId)
     for(i in comments) {
       var comment = $("<div/>", {
         class: "comment",
-        html: comments[i].text
+        html: comments[i].comment
       }).appendTo(commentsDiv);
     } 
 
