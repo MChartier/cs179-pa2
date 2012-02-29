@@ -1,3 +1,5 @@
+// asynchronously add a book to the database
+// and reload books on the page
 function addBook()
 {
   
@@ -13,11 +15,12 @@ function addBook()
       	type: "POST",
       	data: dataString
     }).done(function(msg) {
-      alert(msg);
     	loadBooks();
     });
 }
 
+// asynchronously remove a book from the database
+// and reload books on the page
 function removeBook(bookId)
 {
     $.ajax({
@@ -29,6 +32,8 @@ function removeBook(bookId)
     });
 }
 
+// asynchronously add a comment about a book
+// and reload comments on that book
 function addComment(bookId)
 {
   var commentForm = $("#commentform" + bookId);
@@ -46,6 +51,8 @@ function addComment(bookId)
   });
 }
 
+// toggle whether or not comments on a
+// particular book are displayed on the page
 function toggleComments(bookId)
 {
   var comments = $("#book" + bookId).children(".comments");
@@ -55,6 +62,8 @@ function toggleComments(bookId)
     comments.hide("fast");
 }
 
+// asynchronously load books from the database
+// and display them on the page
 function loadBooks()
 {
   $.ajax({
@@ -83,6 +92,8 @@ function loadBooks()
   });
 }
 
+// create an element for the book described by the
+// parameters on the page
 function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   
   // main book div
@@ -109,8 +120,12 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   // book remover div (clicking removes book from database)
   var remover = $('<div/>', {
     class: "bookremover",
-    html: "X"
   }).appendTo(bookInfo);
+
+  $("<img/>", {
+    src:"images/x.png",
+    width:"40px"
+  }).appendTo(remover);
 
   remover.click(function() {
     removeBook(bookId);
@@ -127,16 +142,20 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   }).appendTo(bookInfo);
 
   // comment toggle (clicking displays or hides comments)
-  $('<div/>', {
+  var commentToggle = $('<div/>', {
     class: "commenttoggle",
     html: "Loading comments..."
   }).appendTo(book);
+
+  commentToggle.click(function() {
+    toggleComments(bookId);
+  });
 
   var commentsDiv = $('<div/>', {
     class: "comments"
   }).css("display", "none").appendTo(book);
 
-  $("<ul/>", {
+  var commentsList = $("<ul/>", {
       class: "commentslist",
       "data-role": "listview"
     }).appendTo(commentsDiv);
@@ -168,6 +187,9 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   loadComments(bookId);
 }
 
+// asynchronously load comments on a particular book
+// from the database and reload comments on that book
+// on the page
 function loadComments(bookId)
 {
   $.ajax({
@@ -180,8 +202,9 @@ function loadComments(bookId)
     var bookDiv = $("#book" + bookId);
     var commentsList = bookDiv.children(".comments").children(".commentslist");
 
-    // remove all old comments
+    // remove all old comments and set up initial listview
     commentsList.children(".comment").remove();
+    commentsList.listview();
 
     // place each comment on page
     for(i in comments) {
@@ -191,22 +214,20 @@ function loadComments(bookId)
       }).appendTo(commentsList);
     } 
 
-    commentsList.listview();
+    // refresh listview to format new entries
+    commentsList.listview("refresh");
 
     // update toggle for these comments
     bookDiv.children(".commenttoggle").html(comments.length + " comments");
-    bookDiv.children(".commenttoggle").click(
-      function() {
-        toggleComments(bookId);
-      });
+  }).complete(function() {
+    var commentsList = bookDiv.children(".comments").children(".commentslist");
+    commentsList.listview();
   });
+
 }
 
+// execute when document is ready
 $(document).ready(function() {
-
-  $(".field").click(function() {
-    $(this).val("");
-  });
 
   $("input#bookformsubmit").click(function(event) {
     event.preventDefault();
