@@ -1,7 +1,7 @@
 <?
   $username = "cs179";
   $password = "cs179pa2";
-  $host = "localhost";
+  $host = "mysql.cs179.org";
   $db = "cs179pa2";
 
   // opcodes
