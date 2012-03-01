@@ -77,19 +77,16 @@ function toggleComments(bookId)
 
 function toggleFavorite(bookId)
 {
-  var favoriter = $("#" + bookId).children(".bookinfo").children(".bookfavoriter");
+  var favoriter = $("#book" + bookId).children(".bookinfo").children(".bookfavoriter");
 
-  favoriter.remove();
-
-  // if(localStorage.getItem(bookId)) {
-  //   favoriter.attr("src", "images/notfavoritestar.png");
-  //   localStorage.removeItem(bookId);
-  // }
-  // else {
-  //   alert('k');
-  //   localStorage.setItem(bookId, "true");
-  //   favoriter.attr("src", "images/favoritestar.png");
-  // }
+  if(localStorage.getItem(bookId)) {
+    favoriter.attr("src", "images/notfavoritestar.png");
+    localStorage.removeItem(bookId);
+  }
+  else {
+    localStorage.setItem(bookId, "true");
+    favoriter.attr("src", "images/favoritestar.png");
+  }
 }
 
 // asynchronously load books from the database
@@ -177,6 +174,10 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
     toggleFavorite(bookId);
   });
 
+    if(localStorage.getItem(bookId)) {
+      favoriter.attr("src", "images/favoritestar.png");
+    }
+
   // title and author
   $('<div/>', {
     class: "booktitle",
@@ -208,17 +209,20 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
       "data-role": "listview"
     }).appendTo(commentsDiv);
 
+
   var commentForm = $("<div/>", {
-    class: "commentform"
+    id: "commentform" + bookId,
+    "data-role": "fieldcontain"
   }).appendTo(commentsDiv);
 
-  $("<textarea/>", {
-    id: "commentform" + bookId,
+  var commentTextArea = $("<textarea/>", {
     cols: 40,
-    rows: 5
+    rows: 8,
+    name: "textarea",
+    id: "textarea"
   }).appendTo(commentForm);
 
-  commentForm.append("<br>");
+  commentTextArea.textinput();
 
   var commentsubmit = $("<input/>", {
      type: "submit",
@@ -230,6 +234,8 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
     addComment(bookId);
   });
+
+  commentsubmit.button();
 
   // load comments asynchronously on book load
   loadComments(bookId);
