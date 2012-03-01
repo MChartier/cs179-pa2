@@ -212,17 +212,17 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
   var commentForm = $("<div/>", {
     id: "commentform" + bookId,
-    class: "commentform",
     "data-role": "fieldcontain"
   }).appendTo(commentsDiv);
 
-  
-  $("<textarea/>", {
+  var commentTextArea = $("<textarea/>", {
     cols: 40,
     rows: 8,
     name: "textarea",
     id: "textarea"
   }).appendTo(commentForm);
+
+  commentTextArea.textinput();
 
   var commentsubmit = $("<input/>", {
      type: "submit",
@@ -234,6 +234,8 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
     addComment(bookId);
   });
+
+  commentsubmit.button();
 
   // load comments asynchronously on book load
   loadComments(bookId);
