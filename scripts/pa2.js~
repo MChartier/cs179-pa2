@@ -2,41 +2,40 @@
 // and reload books on the page
 function addBook()
 {
-  
-    var newTitle = $("input#bookformtitle").val();
-    var newAuthor = $("input#bookformauthor").val();
-    var newImage = $("input#bookformimage").val();
+  var newTitle = $("input#bookformtitle").val();
+  var newAuthor = $("input#bookformauthor").val();
+  var newImage = $("input#bookformimage").val();
 
-    var dataString = "opcode=2&title=" + newTitle + "&author=" + newAuthor + "&image=" + newImage;
+  var dataString = "opcode=2&title=" + newTitle + "&author=" + newAuthor + "&image=" + newImage;
 
-    // send ajax request
-    $.ajax({
-        url: "handler.php",
-      	type: "POST",
-      	data: dataString
-    }).done(function(msg) {
-    	loadBooks();
-    });
+  // send ajax request
+  $.ajax({
+    url: "handler.php",
+    type: "POST",
+    data: dataString
+  }).done(function(msg) {
+    loadBooks();
+  });
 }
 
 // asynchronously remove a book from the database
 // and reload books on the page
 function removeBook(bookId)
 {
-    $.ajax({
-	url: "handler.php",
-	type: "POST",
-	data: "opcode=3&bookId=" + bookId
-    }).done(function(msg) {
-	    loadBooks();
-    });
+  $.ajax({
+    url: "handler.php",
+    type: "POST",
+    data: "opcode=3&bookId=" + bookId
+  }).done(function(msg) {
+    loadBooks();
+  });
 }
 
 // asynchronously add a comment about a book
 // and reload comments on that book
 function addComment(bookId)
 {
-  var commentForm = $("#commentform" + bookId);
+  var commentForm = $("#commentform" + bookId).children("#textarea");
   var newText = commentForm.val();
   var dataString = "opcode=5&bookId=" + bookId + "&text=" + newText;
 
@@ -55,13 +54,13 @@ function addComment(bookId)
 // and reload comments on that book
 function removeComment(bookId, commentId)
 {
-    $.ajax({
-      url: "handler.php",
-      type: "POST",
-      data: "opcode=6&commentId=" + commentId
-    }).done(function(msg) {
-      loadComments(bookId);
-    });
+  $.ajax({
+    url: "handler.php",
+    type: "POST",
+    data: "opcode=6&commentId=" + commentId
+  }).done(function(msg) {
+    loadComments(bookId);
+  });
 }
 
 // toggle whether or not comments on a
@@ -102,21 +101,12 @@ function loadBooks()
 
     var books = JSON.parse(msg);
 
-    
-
     for(i in books) {
       loadBook(books[i].uid, 
 	       books[i].title, 
 	       books[i].author, 
 	       books[i].image_url);
     }
-
-    $(".booksynopsis").expander({
-      slicePoint: 400,
-      expandPrefix: '',
-      expandText: '>>>',
-      userCollapseText: '<<<'
-    });
 
     $(".commentsubmit").click(function(event) {
       event.preventDefault();
@@ -174,9 +164,9 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
     toggleFavorite(bookId);
   });
 
-    if(localStorage.getItem(bookId)) {
-      favoriter.attr("src", "images/favoritestar.png");
-    }
+  if(localStorage.getItem(bookId)) {
+    favoriter.attr("src", "images/favoritestar.png");
+  }
 
   // title and author
   $('<div/>', {
@@ -262,12 +252,38 @@ function loadComments(bookId)
 
     // place each comment on page
     for(i in comments) {
-	var commentText = comments[i].comment;
-      $("<li/>", {
+      var commentId = comments[i].uid;
+
+      var commentText = comments[i].comment;
+
+      var commentItem = $("<li/>", {
+	class: "comment"
+      }).appendTo(commentsList);
+
+      commentItem.css("overflow", "auto");
+
+      var deleteElement = $("<div/>", {
+      	class: "commentdeleter",
+	"data-id": commentId,
+	"data-bookId": comments[i].book_uid
+      }).appendTo(commentItem);
+
+      $("<img/>", {
+      	src: "images/x.png",
+      	width: "20px"
+      }).appendTo(deleteElement);
+
+      deleteElement.click(function() {
+	removeComment((this).getAttribute("data-bookId"), (this).getAttribute("data-id"));
+      });
+
+      deleteElement.css("float", "right");
+
+      var commentElement = $("<div/>", {
         class: "comment",
         html: "",
         text: commentText
-      }).appendTo(commentsList);
+      }).appendTo(commentItem);
     } 
 
     // refresh listview to format new entries
@@ -279,7 +295,6 @@ function loadComments(bookId)
     var commentsList = bookDiv.children(".comments").children(".commentslist");
     commentsList.listview();
   });
-
 }
 
 // execute when document is ready

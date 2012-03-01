@@ -14,7 +14,7 @@ function addBook()
     type: "POST",
     data: dataString
   }).done(function(msg) {
-    loadBooks();
+    loadBooks(false);
   });
 }
 
@@ -27,7 +27,7 @@ function removeBook(bookId)
     type: "POST",
     data: "opcode=3&bookId=" + bookId
   }).done(function(msg) {
-    loadBooks();
+    loadBooks(false);
   });
 }
 
@@ -90,7 +90,7 @@ function toggleFavorite(bookId)
 
 // asynchronously load books from the database
 // and display them on the page
-function loadBooks()
+function loadBooks(favoritesOnly)
 {
   $.ajax({
     url: "handler.php",
@@ -102,10 +102,11 @@ function loadBooks()
     var books = JSON.parse(msg);
 
     for(i in books) {
-      loadBook(books[i].uid, 
-	       books[i].title, 
-	       books[i].author, 
-	       books[i].image_url);
+      if(!favoritesOnly || localStorage.getItem(books[i].uid))
+	loadBook(books[i].uid, 
+		 books[i].title, 
+		 books[i].author, 
+		 books[i].image_url);
     }
 
     $(".commentsubmit").click(function(event) {
@@ -305,5 +306,15 @@ $(document).ready(function() {
     addBook();
   });
 
-  loadBooks();
+  $("#alltab").click(function(event) {
+    event.preventDefault();
+    loadBooks(false);
+  });
+
+  $("#favoritestab").click(function(event) {
+    event.preventDefault();
+    loadBooks(true);
+  });
+
+  loadBooks(false);
 });
