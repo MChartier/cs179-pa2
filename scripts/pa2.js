@@ -51,6 +51,19 @@ function addComment(bookId)
   });
 }
 
+// asynchronously remove a comment from the database
+// and reload comments on that book
+function removeComment(bookId, commentId)
+{
+    $.ajax({
+      url: "handler.php",
+      type: "POST",
+      data: "opcode=6&commentId=" + commentId
+    }).done(function(msg) {
+      loadComments(bookId);
+    });
+}
+
 // toggle whether or not comments on a
 // particular book are displayed on the page
 function toggleComments(bookId)
@@ -60,6 +73,23 @@ function toggleComments(bookId)
     comments.show("fast");
   else
     comments.hide("fast");
+}
+
+function toggleFavorite(bookId)
+{
+  var favoriter = $("#" + bookId).children(".bookinfo").children(".bookfavoriter");
+
+  favoriter.remove();
+
+  // if(localStorage.getItem(bookId)) {
+  //   favoriter.attr("src", "images/notfavoritestar.png");
+  //   localStorage.removeItem(bookId);
+  // }
+  // else {
+  //   alert('k');
+  //   localStorage.setItem(bookId, "true");
+  //   favoriter.attr("src", "images/favoritestar.png");
+  // }
 }
 
 // asynchronously load books from the database
@@ -124,7 +154,7 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
   // book remover div (clicking removes book from database)
   var remover = $('<div/>', {
-    class: "bookremover",
+    class: "bookremover"
   }).appendTo(bookInfo);
 
   $("<img/>", {
@@ -134,6 +164,17 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
   remover.click(function() {
     removeBook(bookId);
+  });
+
+  // book favoriter div (clicking marks book as a favorite)
+  var favoriter = $('<img/>', {
+    class: "bookfavoriter",
+    src:"images/notfavoritestar.png",
+    width:"40px"
+  }).appendTo(bookInfo);
+
+  favoriter.click(function() {
+    toggleFavorite(bookId);
   });
 
   // title and author

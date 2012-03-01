@@ -1,6 +1,6 @@
 <?
   $username = "cs179";
-  $password = "cs179pa2"
+  $password = "cs179pa2";
   $host = "localhost";
   $db = "cs179pa2";
 

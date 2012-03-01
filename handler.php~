@@ -59,14 +59,6 @@ function addComment() {
   echo $sql;
 }
 
-// remove a comment from the database
-function removeComment() {
-  $commentId = mysql_real_escape_string($_POST["commentId"]);
-  $sql = "DELETE FROM comments WHERE uid = " . $commentId;
-  $result = mysql_query($sql);
-}
-
-
 // main handler code
 // given operation code, dispatch to appropriate function
 $opcode = $_POST["opcode"];
@@ -86,9 +78,6 @@ case $GETCOMMENTS:
   break;
 case $ADDCOMMENT:
   addComment();
-  break;
-case $REMOVECOMMENT:
-  removeComment($_POST["commentId"]);
   break;
 default:
 }
