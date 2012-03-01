@@ -282,7 +282,7 @@ function loadComments(bookId)
 
       var commentElement = $("<div/>", {
         class: "comment",
-        html: "",
+	html: "",
         text: commentText
       }).appendTo(commentItem);
     } 
