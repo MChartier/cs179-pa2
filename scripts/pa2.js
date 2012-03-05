@@ -68,10 +68,7 @@ function removeComment(bookId, commentId)
 function toggleComments(bookId)
 {
   var comments = $("#book" + bookId).children(".comments");
-  if(comments.css("display") == "none")
-    comments.show("fast");
-  else
-    comments.hide("fast");
+  comments.slideToggle("fast");
 }
 
 function toggleFavorite(bookId)
@@ -130,6 +127,9 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
     class: "bookinfo"
   }).appendTo(book);
 
+  if(!bookCover)
+    bookCover = "http://lib.mnsu.edu/collections/newarrivals/BookCoverGeneric.png";
+
   // book cover div
   var cover = $('<div/>', {
     class: "bookcover",
@@ -182,14 +182,19 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   }).appendTo(bookInfo);
 
   // comment toggle (clicking displays or hides comments)
-  var commentToggle = $('<div/>', {
+  var commentToggle = $('<button/>', {
     class: "commenttoggle",
-    html: "Loading comments..."
+    html: "Comments",
+    "data-inline": "true"
   }).appendTo(book);
 
-  commentToggle.click(function() {
+  commentToggle.click(function(event) {
+    event.preventDefault();
     toggleComments(bookId);
   });
+
+  commentToggle.button();
+
 
   var commentsDiv = $('<div/>', {
     class: "comments"
@@ -291,7 +296,9 @@ function loadComments(bookId)
     commentsList.listview("refresh");
 
     // update toggle for these comments
-    bookDiv.children(".commenttoggle").html(comments.length + " comments");
+    bookDiv.find("button").html(comments.length + " comments");
+    bookDiv.find("button").button("refresh");
+
   }).complete(function() {
     var commentsList = bookDiv.children(".comments").children(".commentslist");
     commentsList.listview();
