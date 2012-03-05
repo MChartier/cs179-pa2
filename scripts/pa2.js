@@ -127,18 +127,24 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
     class: "bookinfo"
   }).appendTo(book);
 
-  if(!bookCover)
-    bookCover = "http://lib.mnsu.edu/collections/newarrivals/BookCoverGeneric.png";
-
   // book cover div
   var cover = $('<div/>', {
     class: "bookcover",
   }).appendTo(bookInfo);
-  $('<img/>', {
-    src: bookCover,
+
+  var defaultImage = $('<img/>', {
+    src: "http://lib.mnsu.edu/collections/newarrivals/BookCoverGeneric.png",
     width: 100,
     alt: bookTitle
-  }).appendTo(cover);
+  });
+
+  defaultImage.appendTo(cover)
+
+  var coverImage = $('<img/>', {
+    src: bookCover,
+  }).load(function() {
+    defaultImage.attr('src', bookCover);
+  });
 
   // book remover div (clicking removes book from database)
   var remover = $('<div/>', {
