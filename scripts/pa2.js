@@ -321,6 +321,15 @@ function loadComments(bookId)
   });
 }
 
+function filterBooks(onlyFavorites) {
+  if(onlyFavorites)
+    $("#selections").children('[data-favorite=false]').hide();
+  else
+    $("#selections").children(".book").show();
+
+  favoritesSelected = onlyFavorites;
+}
+
 // execute when document is ready
 $(document).ready(function() {
 
@@ -342,11 +351,3 @@ $(document).ready(function() {
   loadBooks(false);
 });
 
-function filterBooks(onlyFavorites) {
-  if(onlyFavorites)
-    $("#selections").children('[data-favorite=false]').hide();
-  else
-    $("#selections").children(".book").show();
-
-  favoritesSelected = onlyFavorites;
-}
