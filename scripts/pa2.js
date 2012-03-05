@@ -1,3 +1,6 @@
+favoritesSelected = false;
+
+
 // asynchronously add a book to the database
 // and reload books on the page
 function addBook()
@@ -73,16 +76,22 @@ function toggleComments(bookId)
 
 function toggleFavorite(bookId)
 {
-  var favoriter = $("#book" + bookId).children(".bookinfo").children(".bookfavoriter");
+  var bookDiv = $("#book" + bookId);
+
+  var favoriter = bookDiv.children(".bookinfo").children(".bookfavoriter");
 
   if(localStorage.getItem(bookId)) {
-    favoriter.attr("src", "images/notfavoritestar.png");
     localStorage.removeItem(bookId);
+    favoriter.attr("src", "images/notfavoritestar.png");
+    bookDiv.attr("data-favorite", "false");
   }
   else {
     localStorage.setItem(bookId, "true");
     favoriter.attr("src", "images/favoritestar.png");
+    bookDiv.attr("data-favorite", "true");
   }
+
+  filterBooks(favoritesSelected);
 }
 
 // asynchronously load books from the database
@@ -141,7 +150,7 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   defaultImage.appendTo(cover)
 
   var coverImage = $('<img/>', {
-    src: bookCover,
+    src: bookCover
   }).load(function() {
     defaultImage.attr('src', bookCover);
   });
@@ -173,6 +182,7 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
   if(localStorage.getItem(bookId)) {
     favoriter.attr("src", "images/favoritestar.png");
+//    book.attr("data-favorite", "true");
   }
 
   // title and author
@@ -321,13 +331,22 @@ $(document).ready(function() {
 
   $("#alltab").click(function(event) {
     event.preventDefault();
-    loadBooks(false);
+    filterBooks(false);
   });
 
   $("#favoritestab").click(function(event) {
     event.preventDefault();
-    loadBooks(true);
+    filterBooks(true);
   });
 
   loadBooks(false);
 });
+
+function filterBooks(onlyFavorites) {
+  if(onlyFavorites)
+    $("#selections").children('[data-favorite=false]').hide();
+  else
+    $("#selections").children(".book").show();
+
+  favoritesSelected = onlyFavorites;
+}
