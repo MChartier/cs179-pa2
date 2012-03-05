@@ -14,7 +14,7 @@ function addBook()
     type: "POST",
     data: dataString
   }).done(function(msg) {
-    loadBooks();
+    loadBooks(false);
   });
 }
 
@@ -27,7 +27,7 @@ function removeBook(bookId)
     type: "POST",
     data: "opcode=3&bookId=" + bookId
   }).done(function(msg) {
-    loadBooks();
+    loadBooks(false);
   });
 }
 
@@ -68,10 +68,7 @@ function removeComment(bookId, commentId)
 function toggleComments(bookId)
 {
   var comments = $("#book" + bookId).children(".comments");
-  if(comments.css("display") == "none")
-    comments.show("fast");
-  else
-    comments.hide("fast");
+  comments.slideToggle("fast");
 }
 
 function toggleFavorite(bookId)
@@ -90,7 +87,7 @@ function toggleFavorite(bookId)
 
 // asynchronously load books from the database
 // and display them on the page
-function loadBooks()
+function loadBooks(favoritesOnly)
 {
   $.ajax({
     url: "handler.php",
@@ -102,10 +99,11 @@ function loadBooks()
     var books = JSON.parse(msg);
 
     for(i in books) {
-      loadBook(books[i].uid, 
-	       books[i].title, 
-	       books[i].author, 
-	       books[i].image_url);
+      if(!favoritesOnly || localStorage.getItem(books[i].uid))
+	loadBook(books[i].uid, 
+		 books[i].title, 
+		 books[i].author, 
+		 books[i].image_url);
     }
 
     $(".commentsubmit").click(function(event) {
@@ -128,6 +126,9 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   var bookInfo = $('<div/>', {
     class: "bookinfo"
   }).appendTo(book);
+
+  if(!bookCover)
+    bookCover = "http://lib.mnsu.edu/collections/newarrivals/BookCoverGeneric.png";
 
   // book cover div
   var cover = $('<div/>', {
@@ -281,7 +282,7 @@ function loadComments(bookId)
 
       var commentElement = $("<div/>", {
         class: "comment",
-        html: "",
+	html: "",
         text: commentText
       }).appendTo(commentItem);
     } 
@@ -305,5 +306,15 @@ $(document).ready(function() {
     addBook();
   });
 
-  loadBooks();
+  $("#alltab").click(function(event) {
+    event.preventDefault();
+    loadBooks(false);
+  });
+
+  $("#favoritestab").click(function(event) {
+    event.preventDefault();
+    loadBooks(true);
+  });
+
+  loadBooks(false);
 });
