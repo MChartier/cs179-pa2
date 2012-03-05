@@ -182,7 +182,10 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
   if(localStorage.getItem(bookId)) {
     favoriter.attr("src", "images/favoritestar.png");
-//    book.attr("data-favorite", "true");
+    book.attr("data-favorite", "true");
+  }
+  else {
+    book.attr("data-favorite", "false");
   }
 
   // title and author
