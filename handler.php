@@ -1,8 +1,17 @@
 <?
+/*
+ * handler.php
+ * Matthew Chartier
+ *
+ * This script accepts requests and dispatches them to various handler
+ * functions which output JSON strings in response.
+ *
+ */
+
 // establish connection with database and define constants
 require_once('includes/common.php');
 
-// generate JSON object consisting of books stored in database
+// return information about books in database
 function getBooks() {
   $sql = "SELECT * FROM books ORDER BY uid DESC";
   $result = mysql_query($sql);
@@ -14,9 +23,10 @@ function getBooks() {
   print json_encode($rows);
 }
 
-// generate JSON object consisting of comments on a particular book stored in database
+// return information about comments on a particular book in database
 function getComments($bookId) {
-  $sql = "SELECT * FROM comments WHERE book_uid=" . $bookId . " ORDER BY uid ASC";
+  $sql = "SELECT * FROM comments WHERE book_uid=" . 
+         $bookId . " ORDER BY uid ASC";
   $result = mysql_query($sql);
 
   $rows = array();
@@ -28,7 +38,6 @@ function getComments($bookId) {
 
 // add a book to the database
 function addBook() {
-  // get input from 'POST' message
   $title = mysql_real_escape_string($_POST["title"]);
   $author = mysql_real_escape_string($_POST["author"]);
   $image = mysql_real_escape_string($_POST["image"]);
@@ -41,22 +50,25 @@ function addBook() {
 
 // remove a book from the database
 function removeBook() {
+  // remove book
   $bookId = mysql_real_escape_string($_POST["bookId"]);
   $sql = "DELETE FROM books WHERE uid = " . $bookId;
   $result = mysql_query($sql);
+
+  // remove comments
+  $sql = "DELETE FROM comments WHERE book_uid = " . $bookId;
+  $result = mysql_query($sql);
 }
 
-// add a comment on a book to the database
+// add a comment to the database
 function addComment() {
-  // get input from 'POST' message
   $bookId = mysql_real_escape_string($_POST["bookId"]);
-  $text = mysql_real_escape_string($_POST["text"]);
+  $comment = mysql_real_escape_string($_POST["comment"]);
 
-  $sql = "INSERT INTO comments(book_uid, comment) VALUES('$bookId', '$text')";
-  
+  $sql = "INSERT INTO comments(book_uid, comment) VALUES('$bookId', '$comment')";
   $result = mysql_query($sql);
 
-  echo $sql;
+  print $sql;
 }
 
 // remove a comment from the database

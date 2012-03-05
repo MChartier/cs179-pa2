@@ -1,5 +1,9 @@
+// globals ----------------
+
+// only show favorited books?
 favoritesSelected = false;
 
+// ------------------------
 
 // asynchronously add a book to the database
 // and reload books on the page
@@ -9,14 +13,20 @@ function addBook()
   var newAuthor = $("input#bookformauthor").val();
   var newImage = $("input#bookformimage").val();
 
-  var dataString = "opcode=2&title=" + newTitle + "&author=" + newAuthor + "&image=" + newImage;
+  var data = {
+    opcode: 2,
+    title: newTitle,
+    author: newAuthor,
+    image: newImage
+  };
 
-  // send ajax request
+  // asynchronously add book to the database
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: dataString
+    data: data
   }).done(function(msg) {
+    // asynchronously refresh all books on page
     loadBooks(false);
   });
 }
@@ -25,10 +35,15 @@ function addBook()
 // and reload books on the page
 function removeBook(bookId)
 {
+  var data = {
+    opcode: 3,
+    bookId: bookId
+  };
+
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: "opcode=3&bookId=" + bookId
+    data: data
   }).done(function(msg) {
     loadBooks(false);
   });
@@ -39,14 +54,18 @@ function removeBook(bookId)
 function addComment(bookId)
 {
   var commentForm = $("#commentform" + bookId).children("#textarea");
-  var newText = commentForm.val();
-  var dataString = "opcode=5&bookId=" + bookId + "&text=" + newText;
+  var newComment = commentForm.val();
+  var data = {
+    opcode: 5,
+    bookId: bookId,
+    comment: newComment
+  };
 
   // send ajax request
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: dataString
+    data: data
   }).done(function(msg) {
     loadComments(bookId);
     commentForm.val("");
@@ -57,10 +76,15 @@ function addComment(bookId)
 // and reload comments on that book
 function removeComment(bookId, commentId)
 {
+  var data = {
+    opcode: 6,
+    commentId: commentId
+  };
+
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: "opcode=6&commentId=" + commentId
+    data: data
   }).done(function(msg) {
     loadComments(bookId);
   });
@@ -98,10 +122,14 @@ function toggleFavorite(bookId)
 // and display them on the page
 function loadBooks(favoritesOnly)
 {
+  var data = {
+    opcode: 1
+  };
+
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: "opcode=1"
+    data: data
   }).done(function(msg) {
     $(".book").remove();
 
@@ -214,7 +242,6 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
   commentToggle.button();
 
-
   var commentsDiv = $('<div/>', {
     class: "comments"
   }).css("display", "none").appendTo(book);
@@ -223,7 +250,6 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
       class: "commentslist",
       "data-role": "listview"
     }).appendTo(commentsDiv);
-
 
   var commentForm = $("<div/>", {
     id: "commentform" + bookId,
@@ -261,10 +287,15 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 // on the page
 function loadComments(bookId)
 {
+  var data = {
+    opcode: 4,
+    bookId: bookId
+  };
+
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: "opcode=4&bookId=" + bookId
+    data: data
   }).done(function(msg) {
 
     var comments = $.parseJSON(msg);
@@ -353,4 +384,3 @@ $(document).ready(function() {
 
   loadBooks(false);
 });
-
