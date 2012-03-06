@@ -29,7 +29,11 @@
 		             value="" placeholder="cover url">
 	        <input type="submit" id="bookformsubmit" value="contribute">
               </div>  <!-- end 'bookform' -->
+<<<<<<< HEAD
         <div id="selections" data-role="listview" data-filter="true" data-filter-placeholder="Filter books...">
+=======
+        <div id="selections">
+>>>>>>> 1b05f51afdfbc195ff6d29a4c07a5b9bc224c9bf
 	</div> <!-- end 'selections' -->
       </div> <!-- end 'content' -->
       <div data-role="footer" data-position="fixed">

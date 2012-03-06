@@ -1,7 +1,12 @@
 <?
+  require_once("host.php");
+
   $username = "cs179";
   $password = "cs179pa2";
+<<<<<<< HEAD
   $host = "localhost";
+=======
+>>>>>>> 1b05f51afdfbc195ff6d29a4c07a5b9bc224c9bf
   $db = "cs179pa2";
 
   // opcodes

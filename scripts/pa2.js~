@@ -362,7 +362,10 @@ function filterBooks(onlyFavorites) {
     $("#selections").children(".book").show();
 
   favoritesSelected = onlyFavorites;
+<<<<<<< HEAD
   $("#selections").listview("refresh");
+=======
+>>>>>>> 1b05f51afdfbc195ff6d29a4c07a5b9bc224c9bf
 }
 
 // execute when document is ready

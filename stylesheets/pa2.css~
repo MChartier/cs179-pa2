@@ -22,13 +22,6 @@ body
   font-size:x-large;
 }
 
-#container
-{
-  width:50%;
-  margin:0 auto 0 auto;
-  overflow:auto;
-}
-
 #selections
 {
   overflow:auto;
@@ -36,16 +29,14 @@ body
 
 #bookinput
 {
-  border: solid black 3px;
+  width:100%;
+  border: solid black 1px;
   background-color:tan;
 
 }
 
 .book
 {
-  margin:10px 0 10px 0;
-  border:solid black 3px;
-  background-color:tan;
   overflow:auto;
   clear:both;
 }
@@ -106,9 +97,6 @@ body
 
 .field
 {
-  max-width:200px;
-  width:90%;
-  margin-left:5px;
   font-style:italic;
   color:gray;
 }

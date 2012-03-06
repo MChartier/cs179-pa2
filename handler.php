@@ -42,10 +42,23 @@ function addBook() {
   $author = mysql_real_escape_string($_POST["author"]);
   $image = mysql_real_escape_string($_POST["image"]);
 
-  $sql = "INSERT INTO books(title, author, image_url) " . 
-         "VALUES('$title', '$author', '$image')";
-  
+  $sql = "SELECT * FROM books WHERE title = '$title'";
+
   $result = mysql_query($sql);
+  if(mysql_num_rows($result) == 0) {
+    $sql = "INSERT INTO books(title, author, image_url) " . 
+           "VALUES('$title', '$author', '$image')";
+    $result = mysql_query($sql);
+    $post_data = array('exists' => 'false');
+  }
+  else {
+    $row = mysql_fetch_array($result);
+    $post_data = array('exists' => 'true', 'bookId' => $row["uid"]);    
+  }
+
+  $post_data = json_encode($post_data);
+
+  print $post_data;
 }
 
 // remove a book from the database
