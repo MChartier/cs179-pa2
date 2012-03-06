@@ -259,7 +259,7 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   }).css("display", "none").appendTo(book);
 
   var commentsList = $("<ul/>", {
-      class: "commentslist",
+      class: "commentslist"
     }).appendTo(commentsDiv);
 
   var commentForm = $("<div/>", {
@@ -323,16 +323,15 @@ function loadComments(bookId)
       var commentText = comments[i].comment;
 
       var commentItem = $("<li/>", {
-	class: "comment",
-	"data-theme": "b"
+	class: "comment"
       }).appendTo(commentsList);
 
       commentItem.css("overflow", "auto");
 
       var deleteElement = $("<div/>", {
       	class: "commentdeleter",
-	"data-id": commentId,
-	"data-bookId": comments[i].book_uid
+      	"data-id": commentId,
+      	"data-bookId": comments[i].book_uid
       }).appendTo(commentItem);
 
       $("<img/>", {
@@ -341,7 +340,7 @@ function loadComments(bookId)
       }).appendTo(deleteElement);
 
       deleteElement.click(function() {
-	removeComment((this).getAttribute("data-bookId"), (this).getAttribute("data-id"));
+      	removeComment((this).getAttribute("data-bookId"), (this).getAttribute("data-id"));
       });
 
       deleteElement.css("float", "right");
@@ -353,15 +352,11 @@ function loadComments(bookId)
       }).appendTo(commentItem);
     } 
 
-    // refresh listview to format new entries
-    $("#selections").listview("refresh");
-
     // update toggle for these comments
     bookDiv.find("button").html(comments.length + " comments");
     bookDiv.find("button").button("refresh");
 
   }).complete(function() {
-    var commentsList = bookDiv.children(".comments").children(".commentslist");
   });
 }
 
