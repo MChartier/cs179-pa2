@@ -17,7 +17,8 @@
         Ben B's Book Club
       </div> <!-- end 'header' -->
       <div id="main" data-role="content">
-	<button id="bookformbutton">Add Book</button>
+	<div data-role="collapsible">
+	  <h3>Add Book</h3>
 	<div id="bookform" data-role="fieldcontain" class="ui-hide-label" data-position="fixed">
 	  <label for="title">Auth:</label>
 	  <label for="author">Title:</label>
@@ -30,6 +31,7 @@
 		 value="" placeholder="cover url">
 	  <input type="submit" id="bookformsubmit" value="contribute">
         </div>  <!-- end 'bookform' -->
+	</div>
 
 	<div id="selections" data-role="listview" data-filter="true" data-filter-placeholder="Filter books...">
 	</div> <!-- end 'selections' -->

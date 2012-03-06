@@ -387,11 +387,6 @@ $(document).ready(function() {
     filterBooks(true);
   });
 
-  $("#bookform").hide();
-  $("#bookformbutton").click(function() {
-    $("#bookform").slideToggle();
-  });
-
   $("#nopebutton").button();
   $("#surebutton").button();
 
