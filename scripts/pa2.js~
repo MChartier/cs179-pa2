@@ -1,3 +1,10 @@
+// globals ----------------
+
+// only show favorited books?
+favoritesSelected = false;
+
+// ------------------------
+
 // asynchronously add a book to the database
 // and reload books on the page
 function addBook()
@@ -6,14 +13,20 @@ function addBook()
   var newAuthor = $("input#bookformauthor").val();
   var newImage = $("input#bookformimage").val();
 
-  var dataString = "opcode=2&title=" + newTitle + "&author=" + newAuthor + "&image=" + newImage;
+  var data = {
+    opcode: 2,
+    title: newTitle,
+    author: newAuthor,
+    image: newImage
+  };
 
-  // send ajax request
+  // asynchronously add book to the database
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: dataString
+    data: data
   }).done(function(msg) {
+    // asynchronously refresh all books on page
     loadBooks(false);
   });
 }
@@ -22,10 +35,15 @@ function addBook()
 // and reload books on the page
 function removeBook(bookId)
 {
+  var data = {
+    opcode: 3,
+    bookId: bookId
+  };
+
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: "opcode=3&bookId=" + bookId
+    data: data
   }).done(function(msg) {
     loadBooks(false);
   });
@@ -36,14 +54,18 @@ function removeBook(bookId)
 function addComment(bookId)
 {
   var commentForm = $("#commentform" + bookId).children("#textarea");
-  var newText = commentForm.val();
-  var dataString = "opcode=5&bookId=" + bookId + "&text=" + newText;
+  var newComment = commentForm.val();
+  var data = {
+    opcode: 5,
+    bookId: bookId,
+    comment: newComment
+  };
 
   // send ajax request
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: dataString
+    data: data
   }).done(function(msg) {
     loadComments(bookId);
     commentForm.val("");
@@ -54,10 +76,15 @@ function addComment(bookId)
 // and reload comments on that book
 function removeComment(bookId, commentId)
 {
+  var data = {
+    opcode: 6,
+    commentId: commentId
+  };
+
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: "opcode=6&commentId=" + commentId
+    data: data
   }).done(function(msg) {
     loadComments(bookId);
   });
@@ -73,26 +100,36 @@ function toggleComments(bookId)
 
 function toggleFavorite(bookId)
 {
-  var favoriter = $("#book" + bookId).children(".bookinfo").children(".bookfavoriter");
+  var bookDiv = $("#book" + bookId);
+
+  var favoriter = bookDiv.children(".bookinfo").children(".bookfavoriter");
 
   if(localStorage.getItem(bookId)) {
-    favoriter.attr("src", "images/notfavoritestar.png");
     localStorage.removeItem(bookId);
+    favoriter.attr("src", "images/notfavoritestar.png");
+    bookDiv.attr("data-favorite", "false");
   }
   else {
     localStorage.setItem(bookId, "true");
     favoriter.attr("src", "images/favoritestar.png");
+    bookDiv.attr("data-favorite", "true");
   }
+
+  filterBooks(favoritesSelected);
 }
 
 // asynchronously load books from the database
 // and display them on the page
 function loadBooks(favoritesOnly)
 {
+  var data = {
+    opcode: 1
+  };
+
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: "opcode=1"
+    data: data
   }).done(function(msg) {
     $(".book").remove();
 
@@ -117,7 +154,7 @@ function loadBooks(favoritesOnly)
 function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   
   // main book div
-  var book = $('<div/>', {
+  var book = $('<li/>', {
     id: "book" + bookId,
     class: "book"
   }).appendTo('#selections');
@@ -127,18 +164,24 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
     class: "bookinfo"
   }).appendTo(book);
 
-  if(!bookCover)
-    bookCover = "http://lib.mnsu.edu/collections/newarrivals/BookCoverGeneric.png";
-
   // book cover div
   var cover = $('<div/>', {
     class: "bookcover",
   }).appendTo(bookInfo);
-  $('<img/>', {
-    src: bookCover,
+
+  var defaultImage = $('<img/>', {
+    src: "http://lib.mnsu.edu/collections/newarrivals/BookCoverGeneric.png",
     width: 100,
     alt: bookTitle
-  }).appendTo(cover);
+  });
+
+  defaultImage.appendTo(cover)
+
+  var coverImage = $('<img/>', {
+    src: bookCover
+  }).load(function() {
+    defaultImage.attr('src', bookCover);
+  });
 
   // book remover div (clicking removes book from database)
   var remover = $('<div/>', {
@@ -167,6 +210,10 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
   if(localStorage.getItem(bookId)) {
     favoriter.attr("src", "images/favoritestar.png");
+    book.attr("data-favorite", "true");
+  }
+  else {
+    book.attr("data-favorite", "false");
   }
 
   // title and author
@@ -182,14 +229,18 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   }).appendTo(bookInfo);
 
   // comment toggle (clicking displays or hides comments)
-  var commentToggle = $('<div/>', {
+  var commentToggle = $('<button/>', {
     class: "commenttoggle",
-    html: "Loading comments..."
+    html: "Comments",
+    "data-inline": "true"
   }).appendTo(book);
 
-  commentToggle.click(function() {
+  commentToggle.click(function(event) {
+    event.preventDefault();
     toggleComments(bookId);
   });
+
+  commentToggle.button();
 
   var commentsDiv = $('<div/>', {
     class: "comments"
@@ -199,7 +250,6 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
       class: "commentslist",
       "data-role": "listview"
     }).appendTo(commentsDiv);
-
 
   var commentForm = $("<div/>", {
     id: "commentform" + bookId,
@@ -237,10 +287,15 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 // on the page
 function loadComments(bookId)
 {
+  var data = {
+    opcode: 4,
+    bookId: bookId
+  };
+
   $.ajax({
     url: "handler.php",
     type: "POST",
-    data: "opcode=4&bookId=" + bookId
+    data: data
   }).done(function(msg) {
 
     var comments = $.parseJSON(msg);
@@ -291,11 +346,23 @@ function loadComments(bookId)
     commentsList.listview("refresh");
 
     // update toggle for these comments
-    bookDiv.children(".commenttoggle").html(comments.length + " comments");
+    bookDiv.find("button").html(comments.length + " comments");
+    bookDiv.find("button").button("refresh");
+
   }).complete(function() {
     var commentsList = bookDiv.children(".comments").children(".commentslist");
     commentsList.listview();
   });
+}
+
+function filterBooks(onlyFavorites) {
+  if(onlyFavorites)
+    $("#selections").children('[data-favorite=false]').hide();
+  else
+    $("#selections").children(".book").show();
+
+  favoritesSelected = onlyFavorites;
+  $("#selections").listview("refresh");
 }
 
 // execute when document is ready
@@ -308,12 +375,12 @@ $(document).ready(function() {
 
   $("#alltab").click(function(event) {
     event.preventDefault();
-    loadBooks(false);
+    filterBooks(false);
   });
 
   $("#favoritestab").click(function(event) {
     event.preventDefault();
-    loadBooks(true);
+    filterBooks(true);
   });
 
   loadBooks(false);

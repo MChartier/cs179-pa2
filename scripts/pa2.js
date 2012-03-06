@@ -154,7 +154,7 @@ function loadBooks(favoritesOnly)
 function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   
   // main book div
-  var book = $('<div/>', {
+  var book = $('<li/>', {
     id: "book" + bookId,
     class: "book"
   }).appendTo('#selections');

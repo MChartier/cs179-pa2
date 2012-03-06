@@ -6,8 +6,9 @@
       <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
       <link rel="stylesheet" href="stylesheets/pa2.css" />
       <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-      <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
       <script type="text/javascript" src="scripts/pa2.js"></script>
+      <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+
   </head> 
   <body> 
     <div data-role="page">
@@ -16,21 +17,23 @@
         Ben B's Book Club
       </div> <!-- end 'header' -->
       <div id=data-role="content">
-	      <div id="bookform" data-role="fieldcontain" class="ui-hide-label" data-position="fixed">
-	        <label for="title">Auth:</label>
-	        <label for="author">Title:</label>
-	        <label for="cover_url">Cover URL:</label>
-	        <input type="text" name="title" id="bookformtitle"
-		             value="" placeholder="title">
-	        <input type="text" name="author" id="bookformauthor"
-		             value="" placeholder="author">
-	        <input type="text" name="Cover URL" id="bookformimage"
-		             value="" placeholder="cover url">
-	        <input type="submit" id="bookformsubmit" value="contribute">
-              </div>  <!-- end 'bookform' -->
-        <div id="selections">
+	<div id="bookform" data-role="fieldcontain" class="ui-hide-label" data-position="fixed">
+	  <label for="title">Auth:</label>
+	  <label for="author">Title:</label>
+	  <label for="cover_url">Cover URL:</label>
+	  <input type="text" name="title" id="bookformtitle"
+		 value="" placeholder="title">
+	  <input type="text" name="author" id="bookformauthor"
+		 value="" placeholder="author">
+	  <input type="text" name="Cover URL" id="bookformimage"
+		 value="" placeholder="cover url">
+	  <input type="submit" id="bookformsubmit" value="contribute">
+        </div>  <!-- end 'bookform' -->
+        
+	<div id="selections" data-role="listview" data-filter="true" data-filter-placeholder="Filter books...">
 	</div> <!-- end 'selections' -->
       </div> <!-- end 'content' -->
+
       <div data-role="footer" data-position="fixed">
 	<!-- floats at the bottom of the screen -->
 	<!-- allows toggling of filtering by favorites -->
