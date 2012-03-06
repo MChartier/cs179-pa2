@@ -16,7 +16,7 @@
         Ben B's Book Club
       </div> <!-- end 'header' -->
       <div id=data-role="content">
-	      <div data-role="fieldcontain" class="ui-hide-label" data-position="fixed">
+	      <div id="bookform" data-role="fieldcontain" class="ui-hide-label" data-position="fixed">
 	        <label for="title">Auth:</label>
 	        <label for="author">Title:</label>
 	        <label for="cover_url">Cover URL:</label>
@@ -27,17 +27,20 @@
 	        <input type="text" name="Cover URL" id="bookformimage"
 		             value="" placeholder="cover url">
 	        <input type="submit" id="bookformsubmit" value="contribute">
-        </div>
-        <div id="selections"></div> <!-- end 'selections' -->
+              </div>  <!-- end 'bookform' -->
+        <div id="selections">
+	</div> <!-- end 'selections' -->
       </div> <!-- end 'content' -->
       <div data-role="footer" data-position="fixed">
+	<!-- floats at the bottom of the screen -->
+	<!-- allows toggling of filtering by favorites -->
         <div data-role="navbar">
 	  <ul>
-	    <li><a href="#">All</a></li>
-	    <li><a href="#">Favorites</a></li>
+	    <li id="alltab"><a href="#" class="ui-btn-active">All</a></li>
+	    <li id="favoritestab"><a href="#">Favorites</a></li>
 	  </ul>
-	</div>
-      </div>
+	</div> <!-- end 'navbar' -->
+      </div> <!-- end 'footer' -->
     </div> <!-- end 'page' -->
   </body>
 </html>

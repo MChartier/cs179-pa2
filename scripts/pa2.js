@@ -5,6 +5,10 @@ favoritesSelected = false;
 
 // ------------------------
 
+function clearBookForm() {
+  $("#bookform").children("input").val("");
+}
+
 // asynchronously add a book to the database
 // and reload books on the page
 function addBook()
@@ -26,8 +30,16 @@ function addBook()
     type: "POST",
     data: data
   }).done(function(msg) {
+    var response = $.parseJSON(msg);
+
     // asynchronously refresh all books on page
     loadBooks(false);
+
+    if(response.exists == "true") {
+      alert("book already exists!");
+    }
+
+    clearBookForm();
   });
 }
 
@@ -381,6 +393,9 @@ $(document).ready(function() {
     event.preventDefault();
     filterBooks(true);
   });
+
+  $("#nopebutton").button();
+  $("#surebutton").button();
 
   loadBooks(false);
 });
