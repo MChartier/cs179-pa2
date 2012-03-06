@@ -12,11 +12,12 @@
   </head> 
   <body> 
     <div data-role="page" id="main">
-      <div data-role="header">
+      <div data-role="header" data-position="fixed" data-id="header">
         <img id="title-image" src="images/books.gif">
         Ben B's Book Club
       </div> <!-- end 'header' -->
-      <div id=data-role="content">
+      <div id="main" data-role="content">
+	<button id="bookformbutton">Add Book</button>
 	<div id="bookform" data-role="fieldcontain" class="ui-hide-label" data-position="fixed">
 	  <label for="title">Auth:</label>
 	  <label for="author">Title:</label>
@@ -29,12 +30,12 @@
 		 value="" placeholder="cover url">
 	  <input type="submit" id="bookformsubmit" value="contribute">
         </div>  <!-- end 'bookform' -->
-        
+
 	<div id="selections" data-role="listview" data-filter="true" data-filter-placeholder="Filter books...">
 	</div> <!-- end 'selections' -->
       </div> <!-- end 'content' -->
 
-      <div data-role="footer" data-position="fixed">
+      <div data-role="footer" data-position="fixed" data-id="footer">
 	<!-- floats at the bottom of the screen -->
 	<!-- allows toggling of filtering by favorites -->
         <div data-role="navbar">
