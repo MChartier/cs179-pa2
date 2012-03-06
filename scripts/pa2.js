@@ -260,7 +260,6 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
   var commentsList = $("<ul/>", {
       class: "commentslist",
-      "data-role": "listview"
     }).appendTo(commentsDiv);
 
   var commentForm = $("<div/>", {
@@ -312,11 +311,10 @@ function loadComments(bookId)
 
     var comments = $.parseJSON(msg);
     var bookDiv = $("#book" + bookId);
-    var commentsList = bookDiv.children(".comments").children(".commentslist");
+    var commentsList = bookDiv.children(".comments").children(".commentslist")
 
     // remove all old comments and set up initial listview
     commentsList.children(".comment").remove();
-    commentsList.listview();
 
     // place each comment on page
     for(i in comments) {
@@ -325,7 +323,8 @@ function loadComments(bookId)
       var commentText = comments[i].comment;
 
       var commentItem = $("<li/>", {
-	class: "comment"
+	class: "comment",
+	"data-theme": "b"
       }).appendTo(commentsList);
 
       commentItem.css("overflow", "auto");
@@ -347,7 +346,7 @@ function loadComments(bookId)
 
       deleteElement.css("float", "right");
 
-      var commentElement = $("<div/>", {
+      var commentElement = $("<span/>", {
         class: "comment",
 	html: "",
         text: commentText
@@ -355,7 +354,7 @@ function loadComments(bookId)
     } 
 
     // refresh listview to format new entries
-    commentsList.listview("refresh");
+    $("#selections").listview("refresh");
 
     // update toggle for these comments
     bookDiv.find("button").html(comments.length + " comments");
@@ -363,7 +362,6 @@ function loadComments(bookId)
 
   }).complete(function() {
     var commentsList = bookDiv.children(".comments").children(".commentslist");
-    commentsList.listview();
   });
 }
 
