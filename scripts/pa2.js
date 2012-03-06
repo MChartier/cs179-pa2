@@ -155,6 +155,7 @@ function loadBooks(favoritesOnly)
 		 books[i].image_url);
     }
 
+    $("#selections").listview("refresh");
     $(".commentsubmit").click(function(event) {
       event.preventDefault();
     });
@@ -259,7 +260,8 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   }).css("display", "none").appendTo(book);
 
   var commentsList = $("<ul/>", {
-      class: "commentslist"
+    class: "commentslist",
+    "data-role": "listview"
     }).appendTo(commentsDiv);
 
   var commentForm = $("<div/>", {
@@ -322,7 +324,8 @@ function loadComments(bookId)
 
       var commentText = comments[i].comment;
 
-      var commentItem = $("<li/>", {
+      var commentItem = $("<ul/>", {
+	"data-role": "listview",
 	class: "comment"
       }).appendTo(commentsList);
 
@@ -356,7 +359,9 @@ function loadComments(bookId)
     bookDiv.find("button").html(comments.length + " comments");
     bookDiv.find("button").button("refresh");
 
-  }).complete(function() {
+    commentsList.listview("refresh");
+    $("#selections").listview("refresh");
+
   });
 }
 
