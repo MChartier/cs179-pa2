@@ -71,8 +71,7 @@ body
 
 .bookcover
 {
-  max-width:120px;
-  max-height:160px;
+  max-width:80px;
   padding-right:5px;
   float:left;
 }

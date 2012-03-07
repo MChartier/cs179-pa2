@@ -214,7 +214,7 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
 
   var defaultImage = $('<img/>', {
     src: "http://lib.mnsu.edu/collections/newarrivals/BookCoverGeneric.png",
-    width: 100,
+    width: 60,
     alt: bookTitle
   });
 
