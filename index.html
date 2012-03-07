@@ -23,9 +23,9 @@ $(document).bind("mobileinit", function() {
       </div> <!-- end 'header' -->
       <div id="main" data-role="content">
 	<div data-role="collapsible">
-	  <h3>Add Book</h3>
+	  <h3>add book</h3>
 	<div id="bookform" data-role="fieldcontain" class="ui-hide-label" data-position="fixed">
-	  <label for="title">Auth:</label>
+	  <label for="title">Author:</label>
 	  <label for="author">Title:</label>
 	  <label for="cover_url">Cover URL:</label>
 	  <input type="text" name="title" id="bookformtitle"
@@ -38,7 +38,8 @@ $(document).bind("mobileinit", function() {
         </div>  <!-- end 'bookform' -->
 	</div><br>
 
-	<div id="selections" data-role="listview" data-filter="true" data-filter-placeholder="Filter books...">
+	<div id="selections" data-role="listview" data-filter="true" data-filter-placeholder="filter books..."
+	     data-split-icon="star" data-split-theme="d">
 	</div> <!-- end 'selections' -->
       </div> <!-- end 'content' -->
 
@@ -53,20 +54,5 @@ $(document).bind("mobileinit", function() {
 	</div> <!-- end 'navbar' -->
       </div> <!-- end 'footer' -->
     </div> <!-- end 'page' -->
-    <!-- <div data-role="page" data-url="dialog.html" id="dialog"> -->
-    <!--   <div data-role="header"> -->
-    <!-- 	<h1>Dialog</h1> -->
-    <!--   </div> -->
-    <!--   <div data-role="content"> -->
-    <!-- 	<p> -->
-    <!-- 	  This book has already been added! Would you like to view it? -->
-    <!-- 	</p> -->
-    <!-- 	<p> -->
-    <!-- 	  <button id="surebutton">Sure!</button> -->
-    <!-- 	</p> -->
-    <!-- 	<p> -->
-    <!-- 	  <a id="nopebutton" href="#main">No Thanks</a> -->
-    <!-- 	</p> -->
-    <!--   </div> -->
   </body>
 </html>
