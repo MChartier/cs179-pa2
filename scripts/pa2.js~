@@ -9,6 +9,14 @@ function clearBookForm() {
   $("#bookform").children("input").val("");
 }
 
+function getBook(bookId) {
+  return $("#book" + bookId);
+}
+
+function getComments(bookId) {
+  return $("#comments" + bookId);
+}
+
 // asynchronously add a book to the database
 // and reload books on the page
 function addBook()
@@ -33,7 +41,7 @@ function addBook()
     var response = $.parseJSON(msg);
 
     // asynchronously refresh all books on page
-    loadBooks(false);
+    loadBooks();
 
     if(response.exists == "true") {
       alert("book already exists!");
@@ -57,7 +65,7 @@ function removeBook(bookId)
     type: "POST",
     data: data
   }).done(function(msg) {
-    loadBooks(false);
+    loadBooks();
   });
 }
 
@@ -104,36 +112,42 @@ function removeComment(bookId, commentId)
 
 // toggle whether or not comments on a
 // particular book are displayed on the page
-function toggleComments(bookId)
+// function toggleComments(bookId)
+// {
+//   var comments = $("#book" + bookId).children(".comments");
+//   comments.slideToggle("fast");
+// }
+
+function isFavorite(bookId)
 {
-  var comments = $("#book" + bookId).children(".comments");
-  comments.slideToggle("fast");
+  return localStorage.getItem(bookId);
 }
 
 function toggleFavorite(bookId)
 {
-  var bookDiv = $("#book" + bookId);
+  var bookDiv = getBook(bookId);
 
-  var favoriter = bookDiv.children(".bookinfo").children(".bookfavoriter");
-
-  if(localStorage.getItem(bookId)) {
+  if(isFavorite(bookId)) {
     localStorage.removeItem(bookId);
-    favoriter.attr("src", "images/notfavoritestar.png");
     bookDiv.attr("data-favorite", "false");
+    bookDiv.attr("data-theme", "c");
   }
   else {
     localStorage.setItem(bookId, "true");
-    favoriter.attr("src", "images/favoritestar.png");
     bookDiv.attr("data-favorite", "true");
+    bookDiv.attr("data-theme", "e");
   }
-
-  filterBooks(favoritesSelected);
 }
 
 // asynchronously load books from the database
 // and display them on the page
-function loadBooks(favoritesOnly)
+function loadBooks()
 {
+  $(".commentslist").remove();
+  $('[data-role=page]').not("#main").remove();
+
+  $("#selections").empty();
+
   var data = {
     opcode: 1
   };
@@ -148,12 +162,14 @@ function loadBooks(favoritesOnly)
     var books = JSON.parse(msg);
 
     for(i in books) {
-      if(!favoritesOnly || localStorage.getItem(books[i].uid))
-	loadBook(books[i].uid, 
-		 books[i].title, 
-		 books[i].author, 
-		 books[i].image_url);
+      loadBook(books[i].uid, 
+	       books[i].title, 
+	       books[i].author, 
+	       books[i].image_url);
     }
+    
+    $("#selections").listview();
+
 
     $(".commentsubmit").click(function(event) {
       event.preventDefault();
@@ -168,13 +184,25 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
   // main book div
   var book = $('<li/>', {
     id: "book" + bookId,
-    class: "book"
+    class: "book",
+    "data-theme": "c"
   }).appendTo('#selections');
 
+  if(isFavorite(bookId))
+    book.attr("data-theme", "e");
+
+  if(!isFavorite(bookId) && favoritesSelected)
+    book.hide();
+
   // book info div containing title, author, cover, comments toggle, remover
-  var bookInfo = $('<div/>', {
+  var bookInfo = $('<a/>', {
     class: "bookinfo"
   }).appendTo(book);
+
+  $("<a/>").appendTo(book).click(function() {
+    toggleFavorite(bookId);
+    loadBooks();
+  });
 
   // book cover div
   var cover = $('<div/>', {
@@ -195,100 +223,41 @@ function loadBook(bookId, bookTitle, bookAuthor, bookCover) {
     defaultImage.attr('src', bookCover);
   });
 
-  // book remover div (clicking removes book from database)
-  var remover = $('<div/>', {
-    class: "bookremover"
-  }).appendTo(bookInfo);
-
-  $("<img/>", {
-    src:"images/x.png",
-    width:"40px"
-  }).appendTo(remover);
-
-  remover.click(function() {
-    removeBook(bookId);
-  });
-
-  // book favoriter div (clicking marks book as a favorite)
-  var favoriter = $('<img/>', {
-    class: "bookfavoriter",
-    src:"images/notfavoritestar.png",
-    width:"40px"
-  }).appendTo(bookInfo);
-
-  favoriter.click(function() {
-    toggleFavorite(bookId);
-  });
-
-  if(localStorage.getItem(bookId)) {
-    favoriter.attr("src", "images/favoritestar.png");
-    book.attr("data-favorite", "true");
-  }
-  else {
-    book.attr("data-favorite", "false");
-  }
-
   // title and author
+  var bookHeader = $('<h3/>', {
+    class: "bookheader"
+  }).appendTo(bookInfo);
+
   $('<div/>', {
     class: "booktitle",
     html: "",
-    text: bookTitle
-  }).appendTo(bookInfo);
+    text: bookTitle + " "
+  }).appendTo(bookHeader);
+
+  if(bookAuthor != "")
+    var authorString = "by " + bookAuthor;
+  else
+    authorString = bookAuthor;
+
   $('<div/>', {
     class: "bookauthor",
     html: "",
-    text: "by " + bookAuthor
-  }).appendTo(bookInfo);
+    text: authorString
+  }).appendTo(bookHeader);
 
-  // comment toggle (clicking displays or hides comments)
-  var commentToggle = $('<button/>', {
-    class: "commenttoggle",
-    html: "Comments",
-    "data-inline": "true"
+  var commentsBubble = $("<span/>", {
+    id: "bubble" + bookId,
+    class: "ui-li-count",
+    html: "loading comments..."
   }).appendTo(book);
 
-  commentToggle.click(function(event) {
-    event.preventDefault();
-    toggleComments(bookId);
-  });
-
-  commentToggle.button();
-
-  var commentsDiv = $('<div/>', {
-    class: "comments"
-  }).css("display", "none").appendTo(book);
-
   var commentsList = $("<ul/>", {
-      class: "commentslist",
-      "data-role": "listview"
-    }).appendTo(commentsDiv);
+    id: "comments" + bookId,
+    class: "commentslist",
+    "data-role": "listview"
+    }).appendTo(book);
 
-  var commentForm = $("<div/>", {
-    id: "commentform" + bookId,
-    "data-role": "fieldcontain"
-  }).appendTo(commentsDiv);
-
-  var commentTextArea = $("<textarea/>", {
-    cols: 40,
-    rows: 8,
-    name: "textarea",
-    id: "textarea"
-  }).appendTo(commentForm);
-
-  commentTextArea.textinput();
-
-  var commentsubmit = $("<input/>", {
-     type: "submit",
-     value: "save"
-  }).appendTo(commentForm);
-
-  commentsubmit.click(function(event) {
-    event.preventDefault();
-
-    addComment(bookId);
-  });
-
-  commentsubmit.button();
+  $("#selections").listview("refresh");
 
   // load comments asynchronously on book load
   loadComments(bookId);
@@ -311,12 +280,11 @@ function loadComments(bookId)
   }).done(function(msg) {
 
     var comments = $.parseJSON(msg);
-    var bookDiv = $("#book" + bookId);
-    var commentsList = bookDiv.children(".comments").children(".commentslist");
+    var bookDiv = getBook(bookId);
+    var commentsList = getComments(bookId);
 
     // remove all old comments and set up initial listview
-    commentsList.children(".comment").remove();
-    commentsList.listview();
+    commentsList.empty();
 
     // place each comment on page
     for(i in comments) {
@@ -325,15 +293,15 @@ function loadComments(bookId)
       var commentText = comments[i].comment;
 
       var commentItem = $("<li/>", {
-	class: "comment"
+      	class: "comment"
       }).appendTo(commentsList);
 
       commentItem.css("overflow", "auto");
 
       var deleteElement = $("<div/>", {
       	class: "commentdeleter",
-	"data-id": commentId,
-	"data-bookId": comments[i].book_uid
+      	"data-id": commentId,
+      	"data-bookId": comments[i].book_uid
       }).appendTo(commentItem);
 
       $("<img/>", {
@@ -342,42 +310,77 @@ function loadComments(bookId)
       }).appendTo(deleteElement);
 
       deleteElement.click(function() {
-	removeComment((this).getAttribute("data-bookId"), (this).getAttribute("data-id"));
+      	removeComment((this).getAttribute("data-bookId"), (this).getAttribute("data-id"));
       });
 
       deleteElement.css("float", "right");
 
-      var commentElement = $("<div/>", {
+      var commentElement = $("<span/>", {
         class: "comment",
-	html: "",
+      	html: "",
         text: commentText
       }).appendTo(commentItem);
     } 
 
-    // refresh listview to format new entries
-    commentsList.listview("refresh");
+    if(comments.length == 0) {
+      $("<li/>", {
+	html: "No comments yet!"
+      }).appendTo(commentsList);
+    }
+
+    var commentForm = $("<li/>", {
+      id: "commentform" + bookId,
+      "data-role": "fieldcontain"
+    }).appendTo(commentsList);
+
+    var commentTextArea = $("<textarea/>", {
+      cols: 40,
+      rows: 8,
+      name: "textarea",
+      id: "textarea"
+    }).appendTo(commentForm);
+
+    commentTextArea.textinput();
+
+    var commentsubmit = $("<input/>", {
+      type: "submit",
+      value: "save"
+    }).appendTo(commentForm);
+
+    commentsubmit.click(function(event) {
+      event.preventDefault();
+      addComment(bookId);
+    });
+
+    commentsubmit.button();
 
     // update toggle for these comments
-    bookDiv.find("button").html(comments.length + " comments");
-    bookDiv.find("button").button("refresh");
+    if(comments.length == 1)
+      var bubbleString = comments.length + " comment";
+    else
+      var bubbleString = comments.length + " comments";
 
-  }).complete(function() {
-    var commentsList = bookDiv.children(".comments").children(".commentslist");
-    commentsList.listview();
+    bookDiv.find("#bubble" + bookId).html(bubbleString);
+
+    commentsList.listview("refresh");
   });
 }
 
 function filterBooks(onlyFavorites) {
-  if(onlyFavorites)
-    $("#selections").children('[data-favorite=false]').hide();
-  else
-    $("#selections").children(".book").show();
+  // if(onlyFavorites) {
+  //   $('[data-favorite=false]').hide();
+  // }
+  // else {
+  //   $('[data-favorite=false]').show();
+  // }
 
   favoritesSelected = onlyFavorites;
+  loadBooks(onlyFavorites);
 }
 
 // execute when document is ready
-$(document).ready(function() {
+//$(document).ready(function() {
+$('#main').live('pagecreate',function(event){
 
   $("input#bookformsubmit").click(function(event) {
     event.preventDefault();
@@ -394,8 +397,5 @@ $(document).ready(function() {
     filterBooks(true);
   });
 
-  $("#nopebutton").button();
-  $("#surebutton").button();
-
-  loadBooks(false);
+  loadBooks();
 });

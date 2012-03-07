@@ -35,6 +35,11 @@ body
 
 }
 
+#bookformerror
+{
+
+}
+
 .book
 {
   overflow:auto;
@@ -93,6 +98,7 @@ body
 .comment
 {
   word-wrap:break-word;
+  font-style:italic;
 }
 
 .field
