@@ -155,6 +155,8 @@ function loadBooks()
     opcode: 1
   };
 
+  var temp = $("<div/>");
+
   $.ajax({
     url: "handler.php",
     type: "POST",
@@ -171,8 +173,7 @@ function loadBooks()
 	       books[i].image_url);
     }
     
-    $("#selections").listview();
-
+    $("#selections").listview('refresh');
 
     $(".commentsubmit").click(function(event) {
       event.preventDefault();
@@ -364,7 +365,12 @@ function loadComments(bookId)
 
     commentsubmit.click(function(event) {
       event.preventDefault();
-      addComment(bookId);
+      if(commentTextArea.val() == "")
+	commentTextArea.css("border", "2px red solid");
+      else {
+	commentTextArea.css("border", "");
+	addComment(bookId);
+      }
     });
 
     commentsubmit.button();
@@ -399,7 +405,25 @@ $('#main').live('pagecreate',function(event){
 
   $("input#bookformsubmit").click(function(event) {
     event.preventDefault();
-    addBook();
+
+    var titleInput = $("input#bookformtitle");
+    var authorInput = $("input#bookformauthor");
+
+    if(titleInput.val() != "" && authorInput.val() != "") {
+      addBook();
+      titleInput.css("border","");
+      authorInput.css("border","");
+    }
+    else {
+      if(titleInput.val() == "")
+	titleInput.css("border", "2px solid red"); 
+      else
+	titleInput.css("border", ""); 
+      if(authorInput.val() == "")
+	authorInput.css("border", "2px solid red");
+      else
+	authorInput.css("border", ""); 
+    }
   });
 
   $("#alltab").click(function(event) {
