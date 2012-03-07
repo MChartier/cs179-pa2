@@ -147,6 +147,7 @@ function loadBooks()
 {
   $(".commentslist").remove();
   $('[data-role=page]').not("#main").remove();
+  $('[data-type=search]').val("");
 
   $("#selections").empty();
 
