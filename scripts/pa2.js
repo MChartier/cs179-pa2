@@ -65,7 +65,9 @@ function removeBook(bookId)
     type: "POST",
     data: data
   }).done(function(msg) {
-    loadBooks();
+    //loadBooks();
+    getBook(bookId).remove();
+    $("#selections").listview("refresh");
   });
 }
 
@@ -286,6 +288,18 @@ function loadComments(bookId)
     // remove all old comments and set up initial listview
     commentsList.empty();
 
+    var deleteItem = $("<button/>", {
+      html: "Delete this Book"
+    });
+
+    deleteItem.click(function() {
+      $.mobile.changePage("#main");
+      removeBook(bookId);
+    });
+
+    deleteItem.appendTo(commentsList);
+    deleteItem.button();
+
     // place each comment on page
     for(i in comments) {
       var commentId = comments[i].uid;
@@ -298,22 +312,22 @@ function loadComments(bookId)
 
       commentItem.css("overflow", "auto");
 
-      var deleteElement = $("<div/>", {
-      	class: "commentdeleter",
-      	"data-id": commentId,
-      	"data-bookId": comments[i].book_uid
-      }).appendTo(commentItem);
+      // var deleteElement = $("<div/>", {
+      // 	class: "commentdeleter",
+      // 	"data-id": commentId,
+      // 	"data-bookId": comments[i].book_uid
+      // }).appendTo(commentItem);
 
-      $("<img/>", {
-      	src: "images/x.png",
-      	width: "20px"
-      }).appendTo(deleteElement);
+      // $("<img/>", {
+      // 	src: "images/x.png",
+      // 	width: "20px"
+      // }).appendTo(deleteElement);
 
-      deleteElement.click(function() {
-      	removeComment((this).getAttribute("data-bookId"), (this).getAttribute("data-id"));
-      });
+      // deleteElement.click(function() {
+      // 	removeComment((this).getAttribute("data-bookId"), (this).getAttribute("data-id"));
+      // });
 
-      deleteElement.css("float", "right");
+      // deleteElement.css("float", "right");
 
       var commentElement = $("<span/>", {
         class: "comment",
