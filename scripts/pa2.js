@@ -356,6 +356,10 @@ function loadComments(bookId)
       id: "textarea"
     }).appendTo(commentForm);
 
+    commentTextArea.click(function() {
+      commentTextArea.css("border", "");
+    });
+
     commentTextArea.textinput();
 
     var commentsubmit = $("<input/>", {
@@ -408,6 +412,14 @@ $('#main').live('pagecreate',function(event){
 
     var titleInput = $("input#bookformtitle");
     var authorInput = $("input#bookformauthor");
+
+    titleInput.click(function() {
+      titleInput.css("border", "");
+    });
+
+    authorInput.click(function() {
+      authorInput.css("border", "");
+    });
 
     if(titleInput.val() != "" && authorInput.val() != "") {
       addBook();
